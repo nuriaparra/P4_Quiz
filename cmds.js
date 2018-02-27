@@ -155,7 +155,7 @@ exports.funcionplay = rl=> {
     const playOne = () =>{
 
      if(PorResolver.length === 0){
-     	 console.log('No quedan preguntas por resolver');
+     	 console.log('No quedan pregunta por resolver');
      	 rl.prompt();
    
      }else{
