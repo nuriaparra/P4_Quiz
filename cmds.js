@@ -184,7 +184,7 @@ exports.funcionplay = rl=> {
 //Funcion credits
 exports.funcioncredits = rl => {
 
-    console.log("Nuria Parra Valverde");
+    console.log("NURIA Parra Valverde");
     rl.prompt();
 };
 
