@@ -4,7 +4,7 @@ const {log, biglog, colorize}= require("./out");//colorear
 
 
 //Funcion help: muestra los posibles comandos
-exports.funcionhelp = rl => {
+exports.helpCmd = rl => {
  	console.log("Posibles comandos");
     console.log("h|help - Ayuda");
     console.log("list - Lista de todas las preguntas");
@@ -167,8 +167,8 @@ exports.playCmd = rl=> {
 
      if(PorResolver.length === 0){
      	 log(`No hay nada más que preguntar.`);
-          log(`Fin del juego. Aciertos: ${score}`);
-          biglog(score, 'magenta');
+          log(`Fin del juego. Aciertos: ${puntuacion}`);
+          biglog(puntuacion, 'magenta');
      	 rl.prompt();
    
      }else{
@@ -181,13 +181,13 @@ exports.playCmd = rl=> {
           rl.question(colorize(quiz.question  + '? ', 'red'), respuesta=> {
     	      if(respuesta.toLowerCase().trim() === quiz.answer.toLocaleLowerCase().trim()){
     	 	      puntuacion++;
-    	 		  log(`CORRECTO. - Lleva ${score}  aciertos` );
+    	 		  log(`CORRECTO. - Lleva ${puntuacion}  aciertos` );
                   playOne();
 
                 }else{
                 	log('INCORRECTO.');
-                    log(`Fin del juego. Aciertos: ${score} `);
-                    biglog(score, 'magenta');
+                    log(`Fin del juego. Aciertos: ${puntuacion} `);
+                    biglog(puntuacion, 'magenta');
                 	//console.log(`INCORRECTO. Juego terminado con  ${colorize(puntuacion, 'red')} aciertos` );
                     rl.prompt();
                 }

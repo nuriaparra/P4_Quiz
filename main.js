@@ -65,18 +65,18 @@ rl.on('line', (line) => {//manejadores de eventos
 
     case 'p':
     case 'play':
-     cmds.playCms(rl);
+     cmds.playCmd(rl);
      break; 
 
 
     case 'credits':
-     cmds.funcioncredits(rl);
+     cmds.creditsCmd(rl);
      break; 
 
 
     case 'quit':
     case 'q':
-     cmds.funcionquit(rl);
+     cmds.quitCmd(rl);
      break; 
   
 
