@@ -4,13 +4,13 @@ const chalk =require('chalk');
 
 const colorize  = (mensaje, color) => {//ponecolor
 
-	if (typeof color !=="undefined"){
+	if (typeof color !== "undefined"){
 
 
-	  mensajecolor= chalk[color].bold(mensaje);
+	  mensaje= chalk[color].bold(mensaje);
     }   
 
-	return mensajecolor;
+	return mensaje;
 };
 
 const log  = (mensaje, color) => { //imprimeeltexto

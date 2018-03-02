@@ -20,10 +20,10 @@ exports.funcionhelp = rl => {
 };
 
 //Funcion list
-exports.funcionlist = rl => {
+exports.listCmd = rl => {
 
     model.getAll().forEach((quiz, id) => {
-      console.log(`[${colorize(id, 'magenta')}]: ${quiz.question}`);
+      log(`[${colorize(id, 'magenta')}]: ${quiz.question}`);
     }); 
     
 
@@ -33,16 +33,16 @@ exports.funcionlist = rl => {
 
 
 //Funcion show
-exports.funcionshow = (rl, id) => {
+exports.showCmd = (rl, id) => {
 
     if (typeof id === "undefined"){
   		log(`El valor id no es válido`);
     }else {
   	  try{
   		   const quiz =model.getByIndex(id);
-  		   console.log(`[${colorize(id, 'blue')}]: ${quiz.question}  ${quiz.answer}`);
+  		   log(`[${colorize(id, 'blue')}]: ${quiz.question} ${colorize('=>', 'magenta')} ${quiz.answer}`);
   	    } catch(error){
-  		  console.log(error.message);
+  		  console.log(error);
   	   }
     }
   	
@@ -53,11 +53,11 @@ exports.funcionshow = (rl, id) => {
 
 
 //Funcion add
-exports.funcionadd =rl => {
+exports.addCmd =rl => {
 	rl.question(colorize('Introduce una nueva pregunta:' , 'red'), question => {
 		rl.question(colorize('Introduce la respuesta' , 'red'), answer => {
 			model.add(question, answer);
-			console.log(`${colorize('Se ha añadido', 'blue')}: ${question}  ${answer}`);
+			log(`${colorize('Se ha añadido', 'blue')}: ${question} ${colorize('=>', 'magenta')} ${answer}`);
 			rl.prompt();
         });
 	});
@@ -66,7 +66,7 @@ exports.funcionadd =rl => {
 
 
 //Funcion delete
-exports.funciondelete =(rl, id) => {
+exports.deleteCmd =(rl, id) => {
 
 	   if (typeof id === "undefined"){
   		 log(`El valor id no es válido`);
@@ -74,7 +74,7 @@ exports.funciondelete =(rl, id) => {
   	      try{
   		       model.deleteByIndex(id);
   	      } catch(error){
-  		     console.log(error.message);
+  		     console.log(error);
   	      }
         }
 
@@ -83,7 +83,7 @@ exports.funciondelete =(rl, id) => {
 };
 
 //Funcion edit
-exports.funcionedit = (rl, id) => {
+exports.editCmd = (rl, id) => {
 
     if (typeof id === "undefined"){
   		log(`El valor id no es válido`);
@@ -92,10 +92,17 @@ exports.funcionedit = (rl, id) => {
   
      else {
   	  try{
-  		  rl.question(colorize('Introduce una nueva pregunta:' , 'red'), question => {
+  	  	 const quiz = model.getByIndex(id);
+            
+         process.stdout.isTTY && setTimeout(() => {rl.write(quiz.question)},0);
+            
+         rl.question(colorize(' Introduzca una pregunta: ', 'red'), question => {
+                
+              process.stdout.isTTY && setTimeout(() => {rl.write(quiz.answer)},0);
+  		 
 		     rl.question(colorize('Introduce la respuesta' , 'red'), answer => {
 			     model.update(question, answer);
-			     console.log(`Se ha cambiado el quiz ${colorize(id,'blue')} por: ${question}  ${answer}`);
+			     log(`Se ha cambiado el quiz ${colorize(id,'blue')} por: ${question} ${colorize('=>', 'magenta')}  ${answer}`);
   		         rl.prompt();
   		        });
   	        });
@@ -109,7 +116,7 @@ exports.funcionedit = (rl, id) => {
 
 
 //Funcion test
-exports.funciontest =(rl, id)=> {
+exports.testCmd =(rl, id)=> {
 
 	if (typeof id === "undefined"){
   		log(`El valor id no es válido`);
@@ -119,18 +126,22 @@ exports.funciontest =(rl, id)=> {
     else {
     	 try{ 
     	 	const quiz =model.getByIndex(id);	//obtiene la pregunta correspondiente
-    	 	rl.question(colorize(quiz.question, 'red'), respuesta=> {
-    	 		if(respuesta.toLowerCase().trim() === quiz.answer){
-    	 			biglog("CORRECTO", 'green');
+    	 	rl.question(colorize(quiz.question  + '? ', 'red'), respuesta=> {
+    	 		if(respuesta.toLowerCase().trim() === quiz.answer.toLocaleLowerCase().trim()){
+    	 			log('Su respuesta es correcta.');
+                    biglog('Correcta', 'green');
 
                 }else{
-                	biglog("INCORRECTO", 'red');
-
+                	log('Su respuesta es incorrecta.');
+                    biglog('Incorrecta', 'red');
+ 					rl.prompt();
                 }
-             rl.prompt();
+             
     	 	});
+
+    	 rl.prompt();
         } catch (error){
-    	  console.log(error.message);
+    	  console.log(error);
     	  rl.prompt();
         }
     }  
@@ -143,10 +154,10 @@ exports.funciontest =(rl, id)=> {
 
 
 //Funcion play
-exports.funcionplay = rl=> {
+exports.playCmd = rl=> {
     var i=0;
     let puntuacion =0; //numero de acierto que llevamos
-    let PorResolver = []; //array con las preguntas que quedan
+    let PorResolver = new Array(model.count()); //array con las preguntas que quedan
      
     for(i=0; i< model.count(); i++){ //meter los id's
     	PorResolver[i] = i;
@@ -155,41 +166,47 @@ exports.funcionplay = rl=> {
     const playOne = () =>{
 
      if(PorResolver.length === 0){
-     	 console.log('No quedan pregunta por resolver');
+     	 log(`No hay nada más que preguntar.`);
+          log(`Fin del juego. Aciertos: ${score}`);
+          biglog(score, 'magenta');
      	 rl.prompt();
    
      }else{
 
-    	  let id= Math.round(Math.random()*(PorResolver.length-1));//id aleatorio
+    	  let id= Math.floor(Math.random()*(PorResolver.length-1));//id aleatorio
     	  let quiz=model.getByIndex(PorResolver[id]);
     	  PorResolver.splice(id, 1); //eliminar ese del array auxilair
          
 
-          rl.question(colorize(quiz.question, 'red'), respuesta=> {
-    	      if(respuesta.toLowerCase().trim() === quiz.answer){
+          rl.question(colorize(quiz.question  + '? ', 'red'), respuesta=> {
+    	      if(respuesta.toLowerCase().trim() === quiz.answer.toLocaleLowerCase().trim()){
     	 	      puntuacion++;
-    	 		  console.log(`CORRECTO. Llevas  ${colorize(puntuacion, 'green')} aciertos` );
+    	 		  log(`CORRECTO. - Lleva ${score}  aciertos` );
                   playOne();
 
                 }else{
-                	console.log(`INCORRECTO. Juego terminado con  ${colorize(puntuacion, 'red')} aciertos` );
+                	log('INCORRECTO.');
+                    log(`Fin del juego. Aciertos: ${score} `);
+                    biglog(score, 'magenta');
+                	//console.log(`INCORRECTO. Juego terminado con  ${colorize(puntuacion, 'red')} aciertos` );
                     rl.prompt();
                 }
             });
         }
+        rl.prompt();
     }
     playOne();
 };
  
 //Funcion credits
-exports.funcioncredits = rl => {
-
-    console.log("NURIA Parra Valverde");
+exports.creditsCmd = rl => {
+	console.log('Autores de la práctica:');
+    console.log("Nuria Parra Valverde");
     rl.prompt();
 };
 
 //Funcion quit
-exports.funcionquit = rl => {
+exports.quitCmd = rl => {
 
    rl.close();
    rl.prompt();

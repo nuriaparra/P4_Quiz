@@ -13,11 +13,11 @@ const rl = readline.createInterface({//configuracion del interfaz
   prompt: colorize('quiz >', 'blue'), //lo que sale al principio
 
   completer(line) { //lee una linea y te lo autocompleta con el tabulador
-    const completions = 'help edit delete add show list test credits play quit '.split(' ');
-    const hits = completions.filter((c) => c.startsWith(line));
+     const completions = 'help edit delete add show list test credits play quit '.split(' ');
+     const hits = completions.filter((c) => c.startsWith(line));
  
-   return [hits.length ? hits : completions, line];
-  }
+     return [hits.length ? hits : completions, line];
+    }
 });
 
 rl.prompt();
@@ -34,44 +34,43 @@ rl.on('line', (line) => {//manejadores de eventos
 
     case 'h':
     case 'help':
-      cmds.funcionhelp(rl);
+      cmds.helpCmd(rl);
       break;
 
    case 'list':
-     cmds.funcionlist(rl);
+     cmds.listCmd(rl);
      break;
 
     case 'show':
-     cmds.funcionshow(rl, args[1]);
+     cmds.showCmd(rl, args[1]);
      break; 
 
     case 'add':
-     cmds.funcionadd(rl);
+     cmds.addCmd(rl);
      break; 
 
 
     case 'delete':
-     cmds.funciondelete(rl, args[1]);
+     cmds.deleteCmd(rl, args[1]);
      break;     
 
 
     case 'edit':
-     cmds.funcionedit(rl, args[1]);
+     cmds.editCmd(rl, args[1]);
      break;
 
     case 'test':
-     cmds.funciontest(rl, args[1]);
+     cmds.testCmd(rl, args[1]);
      break; 
 
     case 'p':
     case 'play':
-     cmds.funcionplay(rl);
+     cmds.playCms(rl);
      break; 
 
 
     case 'credits':
      cmds.funcioncredits(rl);
-
      break; 
 
 

@@ -4,7 +4,7 @@ const DB_FILENAME ="quizzes.json"; //fichero donde se guardan los quizzes
 
 
 //array de preguntas
-let quizzes = [
+exports.quizzes = [
 
     {
 	 question: "¿Capital de España?",
@@ -79,7 +79,8 @@ exports.update = (id , question, answer)=>{
 
 	const quiz = quizzes[id]; //variable corresp a ese id
 	if (typeof quiz ==="undefined"){
-		console.log('El valor del id no corresponde a ninguna pregunta');
+		throw new Error('El valor del parámetro id no es válido.');
+		//console.log('El valor del id no corresponde a ninguna pregunta');
 	}
 
 	quizzes.splice(id, 1, { //actualiza 1 elemento de la posicion id
@@ -100,7 +101,9 @@ exports.getByIndex = id => {
 
  	const quiz = quizzes[id]; //variable corresp a ese id
 	if(typeof quiz ==="undefined"){
-		console.log('El valor del id no corresponde a ninguna pregunta');
+		throw new Error('El valor del parámetro id no es válido.');
+
+		//console.log('El valor del id no corresponde a ninguna pregunta');
 	}
 
  return JSON.parse(JSON.stringify(quiz));
@@ -113,7 +116,8 @@ exports.deleteByIndex = id => {
 
    const quiz = quizzes[id]; //variable corresp a ese id
    if (typeof quiz ==="undefined"){
-		console.log('El valor del id no corresponde a ninguna pregunta');
+    	throw new Error('El valor del parámetro id no es válido.');
+		//console.log('El valor del id no corresponde a ninguna pregunta');
 	}
  
   quizzes.splice(id, 1);
