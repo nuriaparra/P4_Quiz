@@ -1,6 +1,6 @@
 const readline = require('readline'); //carga los modulos
 const model = require('./model');  //array y funciones
-const {log, biglog, colorize}= require("./out");//colorear
+const {log, biglog, colorize, errorlog}= require("./out");//colorear
 const cmds =require("./cmds");
 
 biglog("CORE quiz", 'green');
@@ -89,7 +89,7 @@ rl.on('line', (line) => {//manejadores de eventos
   }
 })
 .on('close', () => {
-  log('Has salido del programa', 'red');
+  log('Adios!');
   process.exit(0);
 });
 

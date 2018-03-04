@@ -1,6 +1,6 @@
 const model = require('./model');  //array y funciones
-const {log, biglog, colorize}= require("./out");//colorear
-
+const {log, biglog, colorize, errorlog}= require("./out");//colorear
+const process = require('process');
 
 
 //Funcion help: muestra los posibles comandos
@@ -25,9 +25,7 @@ exports.listCmd = rl => {
     model.getAll().forEach((quiz, id) => {
       log(`[${colorize(id, 'magenta')}]: ${quiz.question}`);
     }); 
-    
-
-   rl.prompt();
+    rl.prompt();
 };
 
 
@@ -36,14 +34,14 @@ exports.listCmd = rl => {
 exports.showCmd = (rl, id) => {
 
     if (typeof id === "undefined"){
-  		log(`El valor id no es válido`);
+  		errorlog("El parámetro id no es valido.");
     }else {
   	  try{
   		   const quiz =model.getByIndex(id);
   		   log(`[${colorize(id, 'blue')}]: ${quiz.question} ${colorize('=>', 'magenta')} ${quiz.answer}`);
-  	    } catch(error){
-  		  console.log(error);
-  	   }
+  	  } catch(error){
+  		  console.log(error.message);
+  	  }
     }
   	
   
@@ -59,7 +57,7 @@ exports.addCmd =rl => {
 			model.add(question, answer);
 			log(`${colorize('Se ha añadido', 'blue')}: ${question} ${colorize('=>', 'magenta')} ${answer}`);
 			rl.prompt();
-        });
+    });
 	});
 
 };
@@ -69,14 +67,14 @@ exports.addCmd =rl => {
 exports.deleteCmd =(rl, id) => {
 
 	   if (typeof id === "undefined"){
-  		 log(`El valor id no es válido`);
-        }else {
+  		  errorlog('Falta el parámetro id.');
+      }else {
   	      try{
-  		       model.deleteByIndex(id);
+  		      model.deleteByIndex(id);
   	      } catch(error){
-  		     console.log(error);
+  		      errorlog(error.message);
   	      }
-        }
+      }
 
 
     rl.prompt();
@@ -86,7 +84,7 @@ exports.deleteCmd =(rl, id) => {
 exports.editCmd = (rl, id) => {
 
     if (typeof id === "undefined"){
-  		log(`El valor id no es válido`);
+  		 errorlog('Falta el parámetro id.');
   		rl.prompt();
     }
   
@@ -107,7 +105,7 @@ exports.editCmd = (rl, id) => {
   		        });
   	        });
         } catch (error){
-    	  console.log(error.message);
+    	   errorlog(error.message);
     	  rl.prompt();
         }
     }  
@@ -119,7 +117,7 @@ exports.editCmd = (rl, id) => {
 exports.testCmd =(rl, id)=> {
 
 	if (typeof id === "undefined"){
-  		log(`El valor id no es válido`);
+  		 errorlog('El parámetro id no es valido.');
   		rl.prompt();
     }
   
@@ -141,7 +139,7 @@ exports.testCmd =(rl, id)=> {
 
     	 rl.prompt();
         } catch (error){
-    	  console.log(error);
+    	   errorlog(error.message);
     	  rl.prompt();
         }
     }  

@@ -23,8 +23,14 @@ const biglog = (mensaje, color) => {//imprimegrande
 };
 
 
+const errorlog = (emsg) => {
+
+    console.log(`${colorize("Error", "red")}: ${colorize(colorize(emsg, "red"), "bgYellowBright")}`);
+}
+
 exports= module.exports= { //otra manera de hacer el exports
 	colorize,
 	log,
-	biglog
+	biglog,
+	errorlog
 };
