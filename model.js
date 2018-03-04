@@ -5,28 +5,23 @@ const DB_FILENAME ="quizzes.json"; //fichero donde se guardan los quizzes
 
 //array de preguntas
 let quizzes = [
-
     {
-	 question: "¿Capital de España?",
-	 answer: "madrid"
+        question: "Capital de Italia",
+        answer: "Roma"
     },
- 
- {
-	 question: "¿10-5?",
-	 answer: "5"
-  },
-
- {
-	 question: "¿Rama telemática o electrónica?",
-	 answer: "electrónica"
-  },
-
- {
-	 question: "¿Cara o Cruz?",
-	 answer: "cruz"
-  },
+    {
+        question: "Capital de Francia",
+        answer: "París"
+    },
+    {
+        question: "Capital de España",
+        answer: "Madrid"
+    },
+    {
+        question: "Capital de Portugal",
+        answer: "Lisboa"
+    }
 ];
-
 
 //METODOS PARA TRABAJR CON EL FICHERO DE QUIZZES
 const load = () => { //carga el fichero. Si no existia, lo crea
