@@ -4,7 +4,7 @@ const DB_FILENAME ="quizzes.json"; //fichero donde se guardan los quizzes
 
 
 //array de preguntas
-exports.quizzes = [
+let quizzes = [
 
     {
 	 question: "¿Capital de España?",
