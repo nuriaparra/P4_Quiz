@@ -85,7 +85,7 @@ exports.editCmd = (rl, id) => {
 
     if (typeof id === "undefined"){
   		 errorlog('Falta el parámetro id.');
-  		rl.prompt();
+  		
     }
   
      else {
@@ -101,7 +101,7 @@ exports.editCmd = (rl, id) => {
 		     rl.question(colorize('Introduce la respuesta' , 'red'), answer => {
 			     model.update(question, answer);
 			     log(`Se ha cambiado el quiz ${colorize(id,'blue')} por: ${question} ${colorize('=>', 'magenta')}  ${answer}`);
-  		         rl.prompt();
+  		        rl.prompt();
   		        });
   	        });
         } catch (error){
@@ -109,7 +109,7 @@ exports.editCmd = (rl, id) => {
     	  rl.prompt();
         }
     }  
-
+  
 };
 
 
@@ -132,12 +132,12 @@ exports.testCmd =(rl, id)=> {
                 }else{
                 	log('Su respuesta es incorrecta.');
                     biglog('Incorrecta', 'red');
- 					rl.prompt();
+ 					          
                 }
-             
-    	 	});
+                rl.prompt();
+    	       	});
 
-    	 rl.prompt();
+    	 
         } catch (error){
     	   errorlog(error.message);
     	  rl.prompt();
@@ -186,12 +186,13 @@ exports.playCmd = rl=> {
                 	log('INCORRECTO.');
                     log(`Fin del juego. Aciertos: ${puntuacion} `);
                     biglog(puntuacion, 'magenta');
-                	//console.log(`INCORRECTO. Juego terminado con  ${colorize(puntuacion, 'red')} aciertos` );
-                    rl.prompt();
+                	 
+                    
                 }
+                rl.prompt();
             });
         }
-        rl.prompt();
+       
     }
     playOne();
 };
