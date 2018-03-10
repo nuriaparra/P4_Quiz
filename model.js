@@ -1,122 +1,36 @@
-const fs=require("fs"); //para leer el archivo
-
-const DB_FILENAME ="quizzes.json"; //fichero donde se guardan los quizzes
-
-
-//array de preguntas
-let quizzes = [
-    {
-        question: "Capital de Italia",
-        answer: "Roma"
+const Sequelize =require('sequelize');
+const sequelize = new Sequelize("sqlite:quizzes.sqlite"); //objeto sequelize
+                                                                           
+sequelize.define('quiz', {//modelo de datos. se crea un array con todos los modelos definidos
+	question: {
+		type: Sequelize.STRING,
+		unique: {msg: "Ya existe esta pregunta"},
+		validate: {notEmpty: {msg: "La pregunta no puede estar vacia"}}
     },
-    {
-        question: "Capital de Francia",
-        answer: "París"
-    },
-    {
-        question: "Capital de España",
-        answer: "Madrid"
-    },
-    {
-        question: "Capital de Portugal",
-        answer: "Lisboa"
-    }
-];
 
-//METODOS PARA TRABAJR CON EL FICHERO DE QUIZZES
-const load = () => { //carga el fichero. Si no existia, lo crea
-	fs.readFile(DB_FILENAME,(err, data) =>{
-		if(err) {
-			if(err.code ==="ENOENT"){
-				save();
-				return;
-			}
-			throw err;
-		}
-
-		let json= JSON.parse(data);
-
-		if(json){
-			quizzes=json;
-		}
-	})
-};
-
-
-const save =() => { //salvar los datos
-	fs.writeFile(DB_FILENAME,
-	JSON.stringify(quizzes),
-	err => {
-		if(err) throw err;
-	});
-
-};
-//METODOS PARA MANEJAR EL ARRAY
-
-
-//devuelve el numeros de preguntas existentes 
-exports.count =() => quizzes.length; 
-
-
-//añade una pregunta al array
-exports.add =(question, answer) =>{
-
-	quizzes.push({
-		question: (question || "").trim(), //en caso de ser indefinido se cambia por "" 
-	    answer: (answer || "").trim()
-	});
-	save();
-
-};
-
-//actualizar una pregunta con id
-exports.update = (id , question, answer)=>{
-
-	const quiz = quizzes[id]; //variable corresp a ese id
-	if (typeof quiz ==="undefined"){
-		throw new Error('El valor del parámetro id no es válido.');
-		//console.log('El valor del id no corresponde a ninguna pregunta');
+    answer: {
+		type: Sequelize.STRING,
+		validate: {notEmpty: {msg: "La respuesta no puede estar vacia"}}
 	}
+});
 
-	quizzes.splice(id, 1, { //actualiza 1 elemento de la posicion id
-		question: (question || "").trim(), 
-		answer: (answer || "").trim()
-    });
-    save();
-};
+sequelize.sync()//es una promesa
+.then(() => sequelize.models.quiz.count())//se accede al modelo quiz y se cuestan
+.then(count=>{
+	if(!count){
+		return sequelize.models.quiz.bulkCreate([//crea varios quizzes
+		{ question: "Capital de Italia", answer: "Roma"},
+		{ question: "Capital de Francia", answer: "París"},
+		{ question: "Capital de España", answer: "Madrid"},
+		{ question: "Capital de Portugal", answer: "Lisboa"}
 
 
-//devuelve todos los elementos del array
-//pasa una copia del array
-exports.getAll = () => JSON.parse(JSON.stringify(quizzes));
+		]);
 
-
-//devuelve el quiz correspon al id indicado
-exports.getByIndex = id => {
-
- 	const quiz = quizzes[id]; //variable corresp a ese id
-	if(typeof quiz ==="undefined"){
-		throw new Error('El valor del parámetro id no es válido.');
-
-		//console.log('El valor del id no corresponde a ninguna pregunta');
 	}
+})
+.catch(error =>{
+	console.log(error);
+});
 
- return JSON.parse(JSON.stringify(quiz));
-};
-
-
-
-//elimina el quiz correspon al id indicado
-exports.deleteByIndex = id => {
-
-   const quiz = quizzes[id]; //variable corresp a ese id
-   if (typeof quiz ==="undefined"){
-    	throw new Error('El valor del parámetro id no es válido.');
-		//console.log('El valor del id no corresponde a ninguna pregunta');
-	}
- 
-  quizzes.splice(id, 1);
-  save();
-};  
-
-load();
+module.exports=sequelize;	
