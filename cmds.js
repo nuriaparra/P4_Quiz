@@ -225,7 +225,7 @@ exports.testCmd =(rl, id)=> {
 
 
 
-//Funcion play
+//Funcion plcd
 exports.playCmd = rl=> {
   var i=0;
 
@@ -247,26 +247,29 @@ exports.playCmd = rl=> {
       }
        
       let posicion=Math.floor(Math.random()*(PorResolver.length-1)); //posicion aleatoria
-      let quiz=PorResolver(posicion); //quiz en esa posicion
+      let quiz=PorResolver[posicion]; //quiz en esa posicion
       PorResolver.splice(posicion,1); //elimina el quiz el array
 
-     MakeQuestion(rl, 'Introduzca laespuesta')//devuelve la respuesta
-      .then(answer=>{
-        if(answer.toLowerCase().trim() === quiz.answer.toLocaleLowerCase().trim()){
+       log(`${colorize(quiz.question  + '? ', 'red')}`);
+    
+       MakeQuestion(rl, 'Introduzca la respuesta')//devuelve la respuesta
+        .then(answer=>{
+          if(answer.toLowerCase().trim() === quiz.answer.toLocaleLowerCase().trim()){
             puntuacion++;
            log(`CORRECTO. - Lleva ${puntuacion}  aciertos` );
            resolve(playOne());
-        }else{
+          }else{
             log('INCORRECTO.');
             log(`Fin del juego. Aciertos: ${puntuacion} `);
             biglog(puntuacion, 'magenta');
             resolve();    
-            
+            rl.prompt();
          
             return;
-        }            
-     });
-    })  
+          }            
+       });
+      
+    })    
 
   };
   
@@ -286,11 +289,11 @@ exports.playCmd = rl=> {
      errorlog(error.message);
      rl.prompt();
     })
-    .then(()=>{
+   /* .then(()=>{
      log(`Ha conseguido ${puntuacion} punto(s) `);
      biglog(`${puntuacion} PUNTOS`);
      rl.prompt();
-    })
+    })*/
   
   
 };
