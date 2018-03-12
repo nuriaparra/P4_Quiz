@@ -233,14 +233,14 @@ exports.playCmd = rl=> {
   let PorResolver= new Array ();
  
   const playOne =()=>{
-    return new Sequelize.Promise((resolve, reject)=>{
+    return new Promise((resolve, reject)=>{
 
      
-      if(PorResolver.length <= 0){
+      if(PorResolver.length === 0){
          log(`No hay nada más que preguntar.`);
          log(`Fin del juego. Aciertos: ${puntuacion}`);
          biglog(puntuacion, 'magenta');
-         rl.prompt();
+         
          resolve();
          return;
          
@@ -250,50 +250,45 @@ exports.playCmd = rl=> {
       let quiz=PorResolver[posicion]; //quiz en esa posicion
       PorResolver.splice(posicion,1); //elimina el quiz el array
 
-       log(`${colorize(quiz.question  + '? ', 'red')}`);
+       
     
-       MakeQuestion(rl, 'Introduzca la respuesta')//devuelve la respuesta
+      MakeQuestion(rl, quiz.question) //devuelve la respuesta
         .then(answer=>{
           if(answer.toLowerCase().trim() === quiz.answer.toLocaleLowerCase().trim()){
             puntuacion++;
-           log(`CORRECTO. - Lleva ${puntuacion}  aciertos` );
+           log(`correct. - Lleva ${puntuacion}  aciertos` );
            resolve(playOne());
           }else{
-            log('INCORRECTO.');
+            log('incorrect.');
             log(`Fin del juego. Aciertos: ${puntuacion} `);
             biglog(puntuacion, 'magenta');
             resolve();    
-            rl.prompt();
-         
-            return;
-          }            
+          }      
        });
       
-    })    
+    });    
 
-  };
+  }
   
    
-  models.quiz.findAll() //genera una promesa que mete todas las ? en el array quizzes
+  models.quiz.findAll({raw : true}) //genera una promesa que mete todas las ? en el array quizzes
   .then(quizzes=>{//toma quizzes como parametro
-    for(i=0; i< quizzes.length; i++){ //meter los id's
-      PorResolver[i] = quizzes[i];
-    }
+    PorResolver = quizzes;
+    
     
    
   })
   .then(()=>{
-     playOne();
+      return playOne();
     })
     .catch(error=>{
      errorlog(error.message);
      rl.prompt();
     })
-   /* .then(()=>{
-     log(`Ha conseguido ${puntuacion} punto(s) `);
-     biglog(`${puntuacion} PUNTOS`);
+    .then(()=>{
+
      rl.prompt();
-    })*/
+    })
   
   
 };
