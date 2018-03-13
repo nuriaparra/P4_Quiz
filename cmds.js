@@ -198,24 +198,25 @@ exports.testCmd =(rl, id)=> {
        throw new Error('No ha introducido una respuesta válida.');
      }
     
-     if(answer.toLowerCase().trim() === quiz.answer.toLowerCase().trim()){
-        log('CORRECTO',);
+     else if(answer.toLowerCase().trim() === quiz.answer.toLowerCase().trim()){
+        log('correct',);
         biglog('CORRECTO' ,'green');
       }else{
-          log('INCORRECTO',);
+         log('incorrect',);
+          
           biglog('INCORRECTO' ,'red');
       }
 
-    })
+    });
 
 
   })
   .catch(error =>{
     errorlog(error.message);
-   })
-  .then(()=>{
-     rl.prompt();
-  })
+    rl.prompt();
+  });
+  
+  
 
 };
 
