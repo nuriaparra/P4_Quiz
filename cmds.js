@@ -60,7 +60,7 @@ const ValidateId= id => {
 
 
 //FUNCION QUE TRANSFORMA LA LLAMADA A RL.QUESTION A UNA PROMESA 
-const MakeQuestion=(rl, text) =>{
+const makeQuestion=(rl, text) =>{
   return new Sequelize.Promise((resolve, reject)=>{
     rl.question(colorize(text, 'red'), answer=>{
       resolve(answer.trim());
@@ -91,9 +91,9 @@ exports.showCmd = (rl, id) => {
 
 //Funcion add
 exports.addCmd =rl => {
-  MakeQuestion(rl, 'Introduzca una pregunta:')
+  makeQuestion(rl, 'Introduzca una pregunta:')
   .then(question=>{//Recibe como parametro la pregunta generada en la promesa
-    return MakeQuestion(rl, 'Introduzca la respuesta')
+    return makeQuestion(rl, 'Introduzca la respuesta')
     .then(answer=>{//recibe como parametro la respuesta generada en la promesa
       return{ question:question, answer:answer};
      
@@ -147,10 +147,10 @@ exports.editCmd = (rl, id) => {
       throw new Error(`No existe un quiz asociadoal id= ${id}.`);
     }
     process.stdout.isTTY && setTimeout(() => {rl.write(quiz.question)},0);
-    return MakeQuestion(rl, 'Introduzca una pregunta:')
+    return makeQuestion(rl, 'Introduzca una pregunta:')
     .then(question=>{
      process.stdout.isTTY && setTimeout(() => {rl.write(quiz.answer)},0);
-     return MakeQuestion(rl, 'Introduzca la respuesta')
+     return makeQuestion(rl, 'Introduzca la respuesta')
      .then(answer=>{
        quiz.question=question;
        quiz.answer=answer;//recibe como parametro la respuesta generada en la promesa
@@ -192,7 +192,7 @@ exports.testCmd =(rl, id)=> {
     if (!quiz) {
        throw new Error(`No existe un quiz asociado al id=${id}.`);
     }
-    return MakeQuestion(rl,` ${colorize(`${quiz.question}:`,'magenta')} `)
+    return makeQuestion(rl,` ${colorize(`${quiz.question}:`,'magenta')} `)
     .then(answer =>{
      if(typeof answer=== "undefined"){
        throw new Error('No ha introducido una respuesta válida.');
@@ -227,13 +227,13 @@ exports.testCmd =(rl, id)=> {
 
 //Funcion plcd
 exports.playCmd = rl=> {
-  var i=0;
+  var i;
 
   let puntuacion =0;
-  let PorResolver= new Array ();
+  let PorResolve=[];
  
   const playOne =()=>{
-    return new Promise((resolve, reject)=>{
+     return new Promise (function (resolve,reject) {
 
      
       if(PorResolver.length === 0){
@@ -252,17 +252,19 @@ exports.playCmd = rl=> {
 
        
     
-      MakeQuestion(rl, quiz.question) //devuelve la respuesta
+      makeQuestion(rl, quiz.question) //devuelve la respuesta
         .then(answer=>{
-          if(answer.toLowerCase().trim() === quiz.answer.toLocaleLowerCase().trim()){
+          if(answer.toLowerCase().trim() === quiz.answer.toLowerCase().trim()){
             puntuacion++;
-           log(`correct. - Lleva ${puntuacion}  aciertos` );
+           log(` correct `);
+           log(`Lleva  ${puntuacion}  aciertos`);
            resolve(playOne());
           }else{
-            log('incorrect.');
-            log(`Fin del juego. Aciertos: ${puntuacion} `);
-            biglog(puntuacion, 'magenta');
-            resolve();    
+           log("incorrect");
+           log("Fin ");
+           log ("Aciertos: ");
+           biglog(`${puntuacion}`, 'magenta'); 
+          resolve();         
           }      
        });
       
