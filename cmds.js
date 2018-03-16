@@ -184,42 +184,35 @@ exports.editCmd = (rl, id) => {
 
 
 //Funcion test
-exports.testCmd =(rl, id)=> {
-
- ValidateId(id)
-  .then(id => models.quiz.findById(id))
-  .then(quiz => {
-    if (!quiz) {
-       throw new Error(`No existe un quiz asociado al id=${id}.`);
-    }
-    return makeQuestion(rl,` ${colorize(`${quiz.question}:`,'magenta')} `)
-    .then(answer =>{
-     if(typeof answer=== "undefined"){
-       throw new Error('No ha introducido una respuesta válida.');
-     }
-    
-     else if(answer.toLowerCase().trim() === quiz.answer.toLowerCase().trim()){
-        log('correct',);
-        biglog('CORRECTO' ,'green');
-      }else{
-         log('incorrect',);
-          
-          biglog('INCORRECTO' ,'red');
-      }
-
-    });
-
-
-  })
-  .catch(error =>{
-    errorlog(error.message);
-    rl.prompt();
-  });
-  
-  
-
-};
-
+ exports.testCmd = (rl, id) => {
+       if(typeof id ==="undefined"){
+        errorlog (`El parametro id no es valido.`);
+        rl.prompt();
+       }else{
+        let pregunta;
+        models.quiz.findById(id)
+        .then(quiz => {
+          pregunta=quiz;
+        })
+        .then(()=>{
+        makeQuestion(rl,pregunta.question)
+        .then(answer => {
+          answer= answer.toLowerCase().trim();
+          if (answer === pregunta.answer.toLowerCase().trim()){                   
+            log(` correcto `);
+            rl.prompt();
+          }else{
+            log("incorrecto");
+            rl.prompt();         
+          }
+        });
+       })
+       .catch(error =>{
+        errorlog("Error" + error);
+        rl.prompt();
+       });
+   }
+  };
    
 
 
