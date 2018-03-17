@@ -232,7 +232,7 @@ exports.playCmd = rl=> {
      
       if(PorResolver.length === 0){
          log(`No hay nada más que preguntar.`);
-         log(`Fin del juego. Aciertos: ${puntuacion}`);
+         log(`Fin del juego. ${puntuacion}  aciertos`);
          biglog(puntuacion, 'magenta');
          
          resolve();
@@ -256,7 +256,7 @@ exports.playCmd = rl=> {
           }else{
            log(` \bincorrect `);
            log(` \bfin `);
-           log ("Aciertos: ");
+           log (` ${puntuacion}  aciertos`);
            biglog(`${puntuacion}`, 'magenta'); 
           resolve();         
           }      
