@@ -199,10 +199,10 @@ exports.editCmd = (rl, id) => {
         .then(answer => {
           answer= answer.toLowerCase().trim();
           if (answer === pregunta.answer.toLowerCase().trim()){                   
-            log(` correcto `);
+            log(` \bcorrecto `);
             rl.prompt();
           }else{
-            log("incorrecto");
+            log(` \bincorrect`);
             rl.prompt();         
           }
         });
@@ -250,12 +250,12 @@ exports.playCmd = rl=> {
         .then(answer=>{
           if(answer.toLowerCase().trim() === quiz.answer.toLowerCase().trim()){
             puntuacion++;
-           log(` correct `);
+           log(` \bcorrect `);
            log(`Lleva  ${puntuacion}  aciertos`);
            resolve(playOne());
           }else{
-           log("incorrect");
-           log("Fin ");
+           log(` \bincorrect `);
+           log(` \bfin `);
            log ("Aciertos: ");
            biglog(`${puntuacion}`, 'magenta'); 
           resolve();         
