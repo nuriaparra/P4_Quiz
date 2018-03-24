@@ -186,6 +186,7 @@ exports.editCmd = (rl, id) => {
 //Funcion test
  exports.testCmd = (socket, rl, id) => {
        if(typeof id ==="undefined"){
+        errorlog (socket, `error`);
         errorlog (socket, `El parametro id no es valido.`);
         rl.prompt();
        }else{
