@@ -2,14 +2,19 @@ const readline = require('readline'); //carga los modulos
 const model = require('./model');  //array y funciones
 const {log, biglog, colorize, errorlog}= require("./out");//colorear
 const cmds =require("./cmds");
+const net = require("net");
 
-biglog("CORE quiz", 'green');
+net.createServer(socket=>{
+
+  console.log ("Se ha conectado un cliente desde " + socket.remoteAddress);
+
+  biglog(socket,"CORE quiz", 'green');
 
 
 
 const rl = readline.createInterface({//configuracion del interfaz
-  input: process.stdin,
-  output: process.stdout,
+  input: socket,
+  output: socket,
   prompt: colorize('quiz >', 'blue'), //lo que sale al principio
 
   completer(line) { //lee una linea y te lo autocompleta con el tabulador
@@ -20,78 +25,91 @@ const rl = readline.createInterface({//configuracion del interfaz
     }
 });
 
+
+socket
+.on("end", ()=>{rl.close()})
+.on("error", ()=>{rl.close()});
+
+
+
 rl.prompt();
 
 rl.on('line', (line) => {//manejadores de eventos
-	let args = line.split(" "); //separa la linea introducida a traves del espacio para diferencias entre el cmd y el id
-	let comando = args[0].toLowerCase().trim();
+  let args = line.split(" "); //separa la linea introducida a traves del espacio para diferencias entre el cmd y el id
+  let comando = args[0].toLowerCase().trim();
 
  switch (comando) {
 
-  	case ''://retorno de carro
-  	 rl.prompt();
-  	 break;
+    case ''://retorno de carro
+     rl.prompt();
+     break;
 
     case 'h':
     case 'help':
-      cmds.helpCmd(rl);
+      cmds.helpCmd(socket, rl);
       break;
 
    case 'list':
-     cmds.listCmd(rl);
+     cmds.listCmd(socket,rl);
      break;
 
     case 'show':
-     cmds.showCmd(rl, args[1]);
+     cmds.showCmd(socket,rl, args[1]);
      break; 
 
     case 'add':
-     cmds.addCmd(rl);
+     cmds.addCmd(socket,rl);
      break; 
 
 
     case 'delete':
-     cmds.deleteCmd(rl, args[1]);
+     cmds.deleteCmd(socket,rl, args[1]);
      break;     
 
 
     case 'edit':
-     cmds.editCmd(rl, args[1]);
+     cmds.editCmd(socket,rl, args[1]);
      break;
 
     case 'test':
-     cmds.testCmd(rl, args[1]);
+     cmds.testCmd(socket,rl, args[1]);
      break; 
 
     case 'p':
     case 'play':
-     cmds.playCmd(rl);
+     cmds.playCmd(socket,rl);
      break; 
 
 
     case 'credits':
-     cmds.creditsCmd(rl);
+     cmds.creditsCmd(socket,rl);
      break; 
 
 
     case 'quit':
     case 'q':
-     cmds.quitCmd(rl);
+     cmds.quitCmd(socket,rl);
      break; 
   
 
             
     default:
-      console.log(`No entiendo qué has querido decir.  ${colorize(comando, 'red')} no es un comando válido.  Prueba de nuevo o usa 'help' para ver los posibles comandos.`);
+      log(socket,`No entiendo qué has querido decir.  ${colorize(comando, 'red')} no es un comando válido.  Prueba de nuevo o usa 'help' para ver los posibles comandos.`);
       //otra cosa que no entiende
       rl.prompt();
       break;
   }
 })
 .on('close', () => {
-  log('Adios!');
-  process.exit(0);
+  log(socket,'Adios!');
+  
 });
+
+
+})
+.listen(3030);
+
+
 
 //control+D cierra el progrma
 

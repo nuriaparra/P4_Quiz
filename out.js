@@ -13,19 +13,19 @@ const colorize  = (mensaje, color) => {//ponecolor
 	return mensaje;
 };
 
-const log  = (mensaje, color) => { //imprimeeltexto
-	console.log(colorize(mensaje, color));
+const log  = (socket, mensaje, color) => { //imprimeeltexto
+	socket.write(colorize(mensaje, color) + "\n");
 };
 
-const biglog = (mensaje, color) => {//imprimegrande
+const biglog = (socket,mensaje, color) => {//imprimegrande
 
- log(figlet.textSync(mensaje, {horizontalLayout: 'full'}), color );
+ log(socket, figlet.textSync(mensaje, {horizontalLayout: 'full'}), color );
 };
 
 
-const errorlog = (emsg) => {
+const errorlog = (socket, emsg) => {
 
-    console.log(`${colorize("Error", "red")}: ${colorize(colorize(emsg, "red"), "bgYellowBright")}`);
+    socket.write(socket,`${colorize("Error", "red")}: ${colorize(colorize(emsg, "red"), "bgYellowBright")} \n `);
 }
 
 exports= module.exports= { //otra manera de hacer el exports
