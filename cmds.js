@@ -70,7 +70,7 @@ const makeQuestion=(socket, rl, text) =>{
 
 //Funcion show
 exports.showCmd = (socket, rl, id) => {
-  ValidateId(id) //confirma que es una id valido
+  ValidateId(socket, id) //confirma que es una id valido
   .then(id =>models.quiz.findById(id))  //busca el quiz correspondiente
   .then(quiz=>{//toma como parametro ese quiz
     if(!quiz){
@@ -91,9 +91,9 @@ exports.showCmd = (socket, rl, id) => {
 
 //Funcion add
 exports.addCmd =(socket, rl) => {
-  makeQuestion(rl, 'Introduzca una pregunta:')
+  makeQuestion(socket, rl, 'Introduzca una pregunta:')
   .then(question=>{//Recibe como parametro la pregunta generada en la promesa
-    return makeQuestion(rl, 'Introduzca la respuesta')
+    return makeQuestion(socket, rl, 'Introduzca la respuesta')
     .then(answer=>{//recibe como parametro la respuesta generada en la promesa
       return{ question:question, answer:answer};
      
@@ -127,7 +127,7 @@ exports.addCmd =(socket, rl) => {
 //Funcion delete
 exports.deleteCmd =(socket, rl, id) => {
 
- ValidateId(id)//me da el id
+ ValidateId(socket, id)//me da el id
  .then(id=>models.quiz.destroy({where: {id}})) //destruye el elemento que tiene como id el id
  .catch(error=>{ //Error de otro tipo
     errorlog(socket, error.message);
@@ -140,17 +140,17 @@ exports.deleteCmd =(socket, rl, id) => {
 
 //Funcion edit
 exports.editCmd = (rl, id) => {
-  ValidateId(id)
+  ValidateId(socket, id)
   .then(id=>models.quiz.findById(id))//devuelve el quiz 
   .then(quiz=>{
     if(!quiz){
       throw new Error(`No existe un quiz asociadoal id= ${id}.`);
     }
     process.stdout.isTTY && setTimeout(() => {rl.write(quiz.question)},0);
-    return makeQuestion(rl, 'Introduzca una pregunta:')
+    return makeQuestion(socket, rl, 'Introduzca una pregunta:')
     .then(question=>{
      process.stdout.isTTY && setTimeout(() => {rl.write(quiz.answer)},0);
-     return makeQuestion(rl, 'Introduzca la respuesta')
+     return makeQuestion(socket, rl, 'Introduzca la respuesta')
      .then(answer=>{
        quiz.question=question;
        quiz.answer=answer;//recibe como parametro la respuesta generada en la promesa
@@ -195,7 +195,7 @@ exports.editCmd = (rl, id) => {
           pregunta=quiz;
         })
         .then(()=>{
-        makeQuestion(rl,pregunta.question)
+        makeQuestion(socket, rl, pregunta.question)
         .then(answer => {
           answer= answer.toLowerCase().trim();
           if (answer === pregunta.answer.toLowerCase().trim()){                   
@@ -246,7 +246,7 @@ exports.playCmd =(socket, rl)=> {
 
        
     
-      makeQuestion(rl, quiz.question) //devuelve la respuesta
+      makeQuestion(socket, rl, quiz.question) //devuelve la respuesta
         .then(answer=>{
           if(answer.toLowerCase().trim() === quiz.answer.toLowerCase().trim()){
             puntuacion++;
